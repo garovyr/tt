@@ -1,16 +1,15 @@
 CREATE TABLE IF NOT EXISTS orders (
 
     id SERIAL PRIMARY KEY,
+	
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+
+	---
 
     status VARCHAR(50) NOT NULL,
 
-    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE
 );
-
-INSERT INTO orders (status) VALUES
-
-	('Paused');
 
 ---
 
@@ -19,7 +18,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM orders WHERE id = __id) THEN
-        RAISE EXCEPTION 'El pedido con ID % no existe', __id;
+        RAISE EXCEPTION 'Order (id %) does not exist', __id;
     END IF;
 
     UPDATE orders
@@ -30,6 +29,12 @@ EXCEPTION
         RAISE;
 END;
 $$;
+
+---
+
+INSERT INTO orders (status) VALUES
+
+	('Paused');
 
 ---
 

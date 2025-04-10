@@ -2,12 +2,14 @@ CREATE TABLE IF NOT EXISTS users (
 
     id SERIAL PRIMARY KEY,
 
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+
+	---
+
     email VARCHAR(100) UNIQUE NOT NULL,
 
     name VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL,
-
-    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+    password VARCHAR(100) NOT NULL
 );
 
 ---
@@ -17,7 +19,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     IF EXISTS (SELECT 1 FROM users WHERE email = __email) THEN
-        RAISE EXCEPTION 'Already email & was added', __email;
+        RAISE EXCEPTION 'Already email % was added', __email;
     END IF;
 
     INSERT INTO users (email, name, password, created_at)
